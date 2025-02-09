@@ -1,4 +1,7 @@
 {
+  "timeout": 20,
+  "verbose": true,
+  "host": "hexlet.io",
   "name": "Alice",
   "age": 31,
   "city": "New York"

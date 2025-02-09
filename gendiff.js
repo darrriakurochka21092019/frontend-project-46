@@ -17,10 +17,25 @@ program.parse(process.argv);
 
 // Функция для чтения и парсинга файла
 const readFile = (filepath) => {
-  const absolutePath = path.resolve(filepath);
-  const content = fs.readFileSync(absolutePath, 'utf-8');
-  return JSON.parse(content); // Предполагаем, что файлы в формате JSON
+  const absolutePath = path.resolve(filepath); // Преобразуем в абсолютный путь
+  const content = fs.readFileSync(absolutePath, 'utf-8'); // Читаем файл синхронно
+  return JSON.parse(content); // Парсим JSON
 };
+
+// Получаем аргументы
+const filepath1 = program.args[0];
+const filepath2 = program.args[1];
+
+// Читаем и парсим файлы
+let data1, data2;
+
+try {
+  data1 = readFile(filepath1);
+  data2 = readFile(filepath2);
+} catch (error) {
+  console.error(`Error reading files: ${error.message}`);
+  process.exit(1);
+}
 
 // Функция для сравнения данных
 const compareData = (data1, data2) => {
@@ -44,28 +59,13 @@ const compareData = (data1, data2) => {
   return differences;
 };
 
-// Получаем аргументы
-const filepath1 = program.args[0];
-const filepath2 = program.args[1];
-
-// Читаем и парсим файлы
-let data1, data2;
-
-try {
-  data1 = readFile(filepath1);
-  data2 = readFile(filepath2);
-} catch (error) {
-  console.error(`Error reading files: ${error.message}`);
-  process.exit(1);
-}
-
 // Сравниваем данные
 const differences = compareData(data1, data2);
 
 // Выводим результат
 if (differences.length > 0) {
   console.log('Differences:');
-  differences.forEach(diff => console.log(diff));
+  differences.forEach(diff => console.log(diff)); // Выводим каждое различие на новой строке
 } else {
   console.log('No differences found');
 }
