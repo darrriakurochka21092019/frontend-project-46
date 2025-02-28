@@ -1,0 +1,14 @@
+{
+  "env": {
+    "node": true,
+    "jest": true  // Это добавляет глобальные функции Jest
+  },
+  "extends": [
+    "eslint:recommended",
+    "@eslint/js"
+  ],
+  "rules": {
+    "no-unused-vars": "warn",
+    "no-undef": "error"
+  }
+}
