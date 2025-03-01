@@ -1,41 +1,31 @@
 import _ from 'lodash';
 
-const buildDiff = (obj1, obj2) => { // Определяем функцию buildDiff, которая принимает два объекта obj1 и obj2.
-  // Объединяем ключи из обоих объектов и сортируем их
-  const keys = _.union(Object.keys(obj1), Object.keys(obj2)).sort();
-  
-  // Создаём массив output, в котором будем хранить разницу между объектами
-  const output = keys.map(key => {
-    // Проверяем, есть ли ключ только в obj2
-    if (!_.has(obj1, key) && _.has(obj2, key)) {
-      // Если ключ есть только в obj2, добавляем его к output с символом +
-      return `  + ${key + 'dddd'}: ${JSON.stringify(obj2[key])}`;
+const buildDiff = (obj1, obj2) => {
+  const diff = {};
+
+  // Проходим по ключам первого объекта
+  Object.keys(obj1).forEach((key) => {
+    if (!_.has(obj2, key)) {
+      // Ключ есть только в первом объекте
+      diff[` - ${key}: ${obj1[key]}`] = ''; // Добавляем его к output с символом -
+    } else if (!_.isEqual(obj1[key], obj2[key])) {
+      // Ключи есть в обоих объектах, но значения разные
+      diff[` - ${key}: ${obj1[key]}`] = ` + ${key}: ${obj2[key]}`; // Добавляем оба значения к output
+    } else {
+      // Если значения одинаковы, выводим только один объект
+      diff[key] = obj1[key]; // Добавляем одинаковый ключ и значение
     }
-    // Проверяем, есть ли ключ только в obj1
-    if (_.has(obj1, key) && !_.has(obj2, key)) {
-      // Если ключ есть только в obj1, добавляем его к output с символом -
-      return `  - ${key}: ${JSON.stringify(obj1[key])}`;
-    }
-    // Проверяем, равны ли значения ключей в обоих объектах
-    if (!_.isEqual(obj1[key], obj2[key])) {
-      // Если значения различны, добавляем оба значения к output
-      return [
-        `  - ${key}: ${JSON.stringify(obj1[key])}`, // Для obj1 с символом -
-        `  + ${key}: ${JSON.stringify(obj2[key])}`, // Для obj2 с символом +
-      ];
-    }
-    // Если значения одинаковы, выводим только один объект
-    return `    ${key}: ${JSON.stringify(obj1[key])}`; // Выводим ключ и значение без изменений.
   });
 
-  // Объединяем полученный массив output в строку
-  const resultString = output
-    .flat() // Объединяем вложенные массивы в случае различий
-    .filter(Boolean) // Удаляем пустые значения
-    .join('\n'); // Объединяем элементы массива в строку с переносами строки вместо запятых
+  // Проверяем ключи из второго объекта
+  Object.keys(obj2).forEach((key) => {
+    if (!_.has(obj1, key)) {
+      // Ключ есть только во втором объекте
+      diff[` + ${key}: ${obj2[key]}`] = ''; // Добавляем его к output с символом +
+    }
+  });
 
-  // Обрамляем вывод в фигурные скобки
-  return `{\n${resultString}\n}`;
+  return diff; // Возвращаем объект различий
 };
 
 export default buildDiff;

@@ -1,18 +1,20 @@
 import fs from 'fs';
 import path from 'path';
+import compareJsonFiles from '../src/compare.js'; // Импортируем функцию сравнения
 
-// Функция для сравнения JSON-файлов
-const compareJsonFiles = (file1, file2) => {
-    const data1 = JSON.parse(fs.readFileSync(file1, 'utf-8'));
-    const data2 = JSON.parse(fs.readFileSync(file2, 'utf-8'));
-    return JSON.stringify(data1) === JSON.stringify(data2);
-};
+// Функция для получения пути к файлам фикстур
+const getFixturePath = (filename) => path.join(__dirname, '../__fixtures__', filename);
 
-// Тесты для сравнения JSON-файлов
 describe('JSON comparison', () => {
     it('should correctly compare two JSON files', () => {
-        const file1Path = path.join(__dirname, '__fixtures__', 'example1.json');
-        const file2Path = path.join(__dirname, '__fixtures__', 'example2.json');
+        const file1Path = getFixturePath('example1.json');
+        const file2Path = getFixturePath('example2.json');
         expect(compareJsonFiles(file1Path, file2Path)).toBe(true);
+    });
+
+    it('should return false for different JSON files', () => {
+        const file1Path = getFixturePath('example1.json');
+        const file2Path = getFixturePath('example2_different.json'); // Создайте этот файл с отличиями
+        expect(compareJsonFiles(file1Path, file2Path)).toBe(false);
     });
 });
