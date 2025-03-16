@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import parse from './parsersFile.js'; // Импортируем парсер
-import buildDiff from './compare.js'; // Импортируем функцию для сравнения объектов
+import buildDiff from './comparePrevTask.js'; // Импортируем функцию для сравнения объектов
 import yaml from 'js-yaml'; // Импортируем библиотеку для работы с YAML
 
 // Функция для форматирования вывода
@@ -30,10 +30,7 @@ const genDiff = (filepath1, filepath2, format = 'json') => {
   const obj2 = parse(secondFileData, secondFileExtension);
 
   const internalTree = buildDiff(obj1, obj2);
-
-  // Возвращаем результат в нужном формате
-  return formatOutput(internalTree, format); // Убедитесь, что форматирование выполняется корректно
+  console.log('internalTree: ', internalTree)
 };
-
 
 export default genDiff;
