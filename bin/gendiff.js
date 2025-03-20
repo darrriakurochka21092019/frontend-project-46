@@ -1,21 +1,16 @@
 #!/usr/bin/env node
 
-import { Command } from 'commander';
-import genDiff from '../index.js'; // Импортируем функцию сравнения
-import path from 'path';
-import fs from 'fs';
+import commander from 'commander';
+import gendiff from '../index.js';
 
-const program = new Command();
-
-program
-  .version('1.0.0')
+commander
+  .version('0.0.1')
   .description('Compares two configuration files and shows a difference.')
-  .argument('<filepath1>', 'path to the first configuration file')
-  .argument('<filepath2>', 'path to the second configuration file')
-  .option('-f, --format <type>', 'output format', 'default')
-  .action((filepath1, filepath2, options) => {
-    const diff = genDiff(filepath1, filepath2);
+  .option('-f, --format [type]', 'output format', 'stylish')
+  .arguments('<filepath1> <filepath2>')
+  .action((filepath1, filepath2) => {
+    const diff = gendiff(filepath1, filepath2, commander.format);
     console.log(diff);
   });
 
-program.parse(process.argv);
+commander.parse(process.argv);
